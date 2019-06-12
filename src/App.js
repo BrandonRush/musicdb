@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useReducer } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Bloodhound } from 'typeahead.js';
+import useApi from './hooks/useApi';
 import Album from './Album.js';
-// import Search from './Search.js';
+import Search from './Search.js';
 
 import './styles/main.scss';
 
@@ -13,7 +14,8 @@ export default function App() {
     id: '2a0981fb-9593-3019-864b-ce934d97a16e'
   });
 
-  const [resource, setUrl] = useJsonApiReducer();
+  const [resource, setResource] = useApi();
+  const [results, setQuery] = useApi();
 
   const setAlbum = (id) => {
     setEntity({ type: 'album', id: id });
@@ -24,17 +26,21 @@ export default function App() {
   };
 
   useEffect(() => {
+    const params = new URLSearchParams();
+    params.append('fmt', 'json');
+
     switch (entity.type) {
       case 'album':
-        setUrl(`${api_url}release-group/${entity.id}?`);
+        params.append('inc', 'artists+releases');
+        setResource(api_url + `release-group/${entity.id}?` + params);
         break;
       case 'artist':
-        setUrl(`${api_url}artist/${entity.id}?`);
+        setResource(api_url + `artist/${entity.id}?` + params);
         break;
       default:
         throw new Error();
     }
-  }, [entity.id, entity.type, setUrl]);
+  }, [entity.id, entity.type, setResource]);
 
   // useEffect(() => {
   // const response = async () => {
@@ -85,7 +91,8 @@ export default function App() {
   // }, [albumID]);
 
   return (
-    <div className="App">
+    <div>
+      <Search />
       {resource.isLoading ? (
         <p style={{ color: 'blue' }}>Loading...</p>
       ) : resource.isError ? (
@@ -93,146 +100,8 @@ export default function App() {
       ) : (
         <>
           <Album album={resource.data} />
-          {/* <Search fetchAlbumID /> */}
         </>
       )}
     </div>
   );
 }
-
-function useJsonApi(initialUrl, initialData = null) {
-  const [url, setUrl] = useState(initialUrl);
-  const [data, setData] = useState(initialData);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
-
-  useEffect(() => {
-    let controller = new AbortController();
-    setError(false);
-    setLoading(true);
-
-    const loadData = async () => {
-      try {
-        const response = await fetch(url, {
-          signal: controller.signal,
-          headers: {
-            fmt: 'json'
-          }
-        });
-        const data = await response.json();
-        console.log(data);
-        console.log('useFetch: got response');
-        setData(data);
-      } catch (error) {
-        setError(true);
-        if (error.name === 'AbortError') {
-          console.log('useFetch: caught abort');
-        } else {
-          throw error;
-        }
-      }
-      setLoading(false);
-    };
-    loadData();
-
-    return () => {
-      console.log('useFetch: unmounting');
-      controller.abort();
-    };
-  }, [url]);
-
-  return [data, loading, error, setUrl];
-}
-
-const jsonApiReducer = (state, action) => {
-  switch (action.type) {
-    case 'FETCH_INIT':
-      return {
-        ...state,
-        isLoading: true,
-        isError: false
-      };
-    case 'FETCH_FAIL':
-      return {
-        ...state,
-        isLoading: false,
-        isError: true
-      };
-    case 'FETCH_SUCCESS':
-      return {
-        ...state,
-        data: action.payload,
-        isLoading: false,
-        isError: false
-      };
-    default:
-      console.log(state, action);
-      throw new Error();
-  }
-};
-
-const useJsonApiReducer = (initialUrl = null, initialData = null) => {
-  const [url, setUrl] = useState(initialUrl);
-  const [state, dispatch] = useReducer(jsonApiReducer, {
-    data: initialData,
-    isLoading: true,
-    isError: false
-  });
-
-  useEffect(() => {
-    let controller = new AbortController();
-
-    const loadData = async () => {
-      dispatch({ type: 'FETCH_INIT' });
-
-      try {
-        const params = new URLSearchParams();
-        params.append('fmt', 'json');
-        params.append('inc', 'artists+releases');
-
-        const response = await fetch(url + params, {
-          signal: controller.signal
-        });
-        const data = await response.json();
-        console.log('useJsonApiReducer: got response');
-        dispatch({ type: 'FETCH_SUCCESS', payload: data });
-      } catch (error) {
-        dispatch({ type: 'FETCH_FAIL' });
-        if (error.name === 'AbortError') {
-          console.log('useJsonApiReducer: caught abort');
-          console.log(error);
-        } else {
-          throw error;
-        }
-      }
-    };
-    url && loadData(); // Only run when url is set.
-
-    return () => {
-      console.log('useJsonApiReducer: unmounting');
-      controller.abort();
-    };
-  }, [url]);
-
-  return [state, setUrl];
-};
-
-/*
-data.album_type,
-data.artists,
-data.available_markets,
-data.copyrights,
-data.external_ids,
-data.external_urls,
-data.genres,
-data.href,
-data.id,
-data.images,
-data.label,
-data.name,
-data.popularity,
-data.release_date,
-data.release_date_precision,
-data.tracks,
-data.type,
-*/

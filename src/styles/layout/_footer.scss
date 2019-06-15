@@ -2,10 +2,11 @@
 
 footer {
   padding: 30px 0;
+  color: white;
   float: left;
 
   font-size: 0.9em;
-  text-align: center;;
+  text-align: center;
   width: 100%;
   text-shadow: 1px 1px 1px black;
   span {
@@ -16,12 +17,12 @@ footer {
     }
   }
   a {
-    color: darken($midGrey, 30);
-    transition:.7s;
+    transition: 0.7s;
     padding: 8px;
-    &:hover, &:active {
-      color:$limeGreen;
-      transition:.7s;
+    &:hover,
+    &:active {
+      color: $limeGreen;
+      transition: 0.7s;
     }
   }
 }

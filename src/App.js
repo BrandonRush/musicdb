@@ -31,7 +31,7 @@ export default function App() {
 
     switch (entity.type) {
       case 'album':
-        params.append('inc', 'artists+releases');
+        params.append('inc', 'artists+releases+genres');
         setResource(api_url + `release-group/${entity.id}?` + params);
         break;
       case 'artist':
@@ -91,7 +91,7 @@ export default function App() {
   // }, [albumID]);
 
   return (
-    <div>
+    <>
       <Search />
       {resource.isLoading ? (
         <p style={{ color: 'blue' }}>Loading...</p>
@@ -102,6 +102,6 @@ export default function App() {
           <Album album={resource.data} />
         </>
       )}
-    </div>
+    </>
   );
 }

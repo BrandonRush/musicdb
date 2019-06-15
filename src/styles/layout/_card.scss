@@ -18,6 +18,7 @@
   color: $lightGrey;
 
   h1 {
+    white-space: nowrap;
     text-transform: uppercase;
     font-weight: bold;
     font-family: $lato;
@@ -41,7 +42,7 @@
 
     .release-details {
       div {
-        &:nth-child(n+3) {
+        &:nth-child(n + 3) {
           margin-top: 15px;
         }
       }

@@ -1,12 +1,14 @@
 /* logo */
 .logo {
+  color: $limeGreen;
+  font-size: 2.5rem;
+  font-weight: 600;
   width: 100%;
   max-width: 140px;
   margin: 0 auto;
   margin-bottom: 25px;
   display: block;
 }
-
 
 // sm up
 @include media-breakpoint-up(sm) {

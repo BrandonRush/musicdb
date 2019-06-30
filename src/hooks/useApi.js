@@ -91,8 +91,6 @@ const useApi = (
   return [state, setResource];
 };
 
-export default useApi;
-
 const useSearch = (type, query) => {
   const [entity, setEntity] = useApi();
 };
@@ -137,3 +135,5 @@ export const useEntity = (initialEntity = null) => {
 
   return [resource, setResource, setEntity];
 };
+
+export default useApi;

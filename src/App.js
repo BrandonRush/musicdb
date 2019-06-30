@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Bloodhound } from 'typeahead.js';
+import typeahead, { Bloodhound } from 'typeahead.js';
 import useApi from './hooks/useApi';
 import Album from './Album.js';
 import Search from './Search.js';
@@ -41,6 +41,33 @@ export default function App() {
         throw new Error();
     }
   }, [entity.id, entity.type, setResource]);
+
+  // let searchResults = new Bloodhound({
+  //   initialize: false,
+  //   local: ['dog', 'cat', 'hamster', 'cow'],
+  //   queryTokenizer: (datum) => Bloodhound.tokenizers.whitespace(datum.value),
+  //   dataTokenizer: (datum) => Bloodhound.tokenizers.whitespace(datum.value),
+  //   remote: {
+  //     url: `${api_url}release-group?query=`,
+  //     transform: (response) =>
+  //       response['release-groups'].map((album) => {
+  //         return { value: album.title, id: album.id };
+  //       })
+  //   }
+  // });
+
+  // searchResults.initialize();
+  // let input = document.getElementById('typeahead');
+  // input
+  //   .typeahead(
+  //     { hint: true, highlight: true, minLength: 2 },
+  //     { source: searchResults.ttAdapter() }
+  //   )
+  //   .on('typeahead:selected', (obj, datum) => {
+  //     const params = new URLSearchParams();
+  //     params.append('inc', 'artists+releases+genres');
+  //     setResource(api_url + `release-group/${entity.id}?` + params);
+  //   });
 
   // useEffect(() => {
   // const response = async () => {

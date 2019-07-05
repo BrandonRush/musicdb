@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import Autosuggest from 'react-autosuggest';
 
-const languages = [
+const albums = [
   {
-    name: 'C',
-    year: 1972
+    name: 'Presence',
+    id: '42f8acce-90fc-3471-a4cd-ace1ab816276'
   },
   {
-    name: 'Elm',
-    year: 2012
+    name: 'Aladdin Sane',
+    id: '50f8710f-3ae6-319b-85a7-afe783f13449'
   }
 ];
 
@@ -19,8 +19,8 @@ const getSuggestions = (value) => {
 
   return inputLength === 0
     ? []
-    : languages.filter(
-        (lang) => lang.name.toLowerCase().slice(0, inputLength) === inputValue
+    : albums.filter(
+        (album) => album.name.toLowerCase().slice(0, inputLength) === inputValue
       );
 };
 
@@ -32,7 +32,7 @@ const getSuggestionValue = (suggestion) => suggestion.name;
 // Use your imagination to render suggestions.
 const renderSuggestion = (suggestion) => <div>{suggestion.name}</div>;
 
-export default function Search() {
+export default function Search({ setAlbum }) {
   const [value, setValue] = useState('');
   const [suggestions, setSuggestions] = useState([]);
 
@@ -49,6 +49,14 @@ export default function Search() {
   // Autosuggest will call this function every time you need to clear suggestions.
   const onSuggestionsClearRequested = () => {
     setSuggestions([]);
+  };
+
+  const onSuggestionSelected = (
+    event,
+    { suggestion, suggestionValue, suggestionIndex, sectionIndex, method }
+  ) => {
+    console.log('in onSuggestionSelected');
+    setAlbum({ type: 'album', id: suggestion.id });
   };
 
   const inputProps = {
@@ -86,6 +94,7 @@ export default function Search() {
             suggestions={suggestions}
             onSuggestionsFetchRequested={onSuggestionsFetchRequested}
             onSuggestionsClearRequested={onSuggestionsClearRequested}
+            onSuggestionSelected={onSuggestionSelected}
             getSuggestionValue={getSuggestionValue}
             renderSuggestion={renderSuggestion}
             inputProps={inputProps}

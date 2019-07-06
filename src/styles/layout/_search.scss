@@ -92,8 +92,8 @@
 }
 
 .react-autosuggest__input {
-  width: 150px;
-  height: 30px;
+  width: 100%; // full width input search
+  border-bottom: solid 1px white;
   padding: 10px 20px;
   font-family: Helvetica, sans-serif;
   font-weight: 300;

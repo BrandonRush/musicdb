@@ -75,7 +75,8 @@ export default function Album({ album }) {
             <span className="genre-list">
               {genres.map((genre) => genre.name.toUpperCase()).join(', ')}
             </span>
-            <span className="production-list">{album['primary-type']}</span>
+            <br />
+            {/* <span className="production-list">{album['primary-type']}</span> */}
             <div className="row nopadding release-details mb-2">
               <div className="col">
                 Original Release:
@@ -95,14 +96,14 @@ export default function Album({ album }) {
                 </span>
               </div>
             </div>
-            <div className="row nopadding release-details">
+            {/* <div className="row nopadding release-details">
               <div className="col">
                 Box Office: <span className="meta-data">{album.title}</span>
               </div>
               <div className="col">
                 Vote Average: <span className="meta-data">{album.title}</span>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
@@ -111,7 +112,10 @@ export default function Album({ album }) {
           {!release.isLoading &&
             release.data.media[0].tracks.map((track, index) => {
               return (
-                <div className="row justify-content-between mb-3 align-items-baseline">
+                <div
+                  key={index}
+                  className="row justify-content-between mb-3 align-items-baseline"
+                >
                   <span className="meta-data col-lg-8">
                     {index + 1 + '. ' + track.title}
                   </span>

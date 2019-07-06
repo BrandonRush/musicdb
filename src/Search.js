@@ -4,10 +4,12 @@ import Autosuggest from 'react-autosuggest';
 const albums = [
   {
     name: 'Presence',
+    artist: 'Led Zeppelin',
     id: '42f8acce-90fc-3471-a4cd-ace1ab816276'
   },
   {
     name: 'Aladdin Sane',
+    artist: 'David Bowie',
     id: '50f8710f-3ae6-319b-85a7-afe783f13449'
   }
 ];
@@ -16,6 +18,8 @@ const albums = [
 const getSuggestions = (value) => {
   const inputValue = value.trim().toLowerCase();
   const inputLength = inputValue.length;
+
+  console.log('value is ' + value);
 
   return inputLength === 0
     ? []

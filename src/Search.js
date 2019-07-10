@@ -1,40 +1,40 @@
 import React, { useState, useEffect } from 'react';
 import Autosuggest from 'react-autosuggest';
 
-const albums = [
-  {
-    name: 'Presence',
-    artist: 'Led Zeppelin',
-    id: '42f8acce-90fc-3471-a4cd-ace1ab816276'
-  },
-  {
-    name: 'Aladdin Sane',
-    artist: 'David Bowie',
-    id: '50f8710f-3ae6-319b-85a7-afe783f13449'
-  }
-];
-
 // Teach Autosuggest how to calculate suggestions for any given input value.
-const getSuggestions = (value) => {
-  const inputValue = value.trim().toLowerCase();
-  const inputLength = inputValue.length;
-
-  console.log('value is ' + value);
-
-  return inputLength === 0
-    ? []
-    : albums.filter(
-        (album) => album.name.toLowerCase().slice(0, inputLength) === inputValue
-      );
+const getSuggestions = async (value) => {
+  try {
+    const response = await fetch(
+      `https://musicbrainz.org/ws/2/release-group/?query=releasegroup:${value}&fmt=json&limit=10`
+    );
+    const data = await response.json();
+    console.log(data['release-groups']);
+    return data['release-groups'].filter(
+      (album) =>
+        album['secondary-types'] === undefined && album.title !== 'Release'
+    );
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 // When suggestion is clicked, Autosuggest needs to populate the input
 // based on the clicked suggestion. Teach Autosuggest how to calculate the
 // input value for every given suggestion.
-const getSuggestionValue = (suggestion) => suggestion.name;
+const getSuggestionValue = (suggestion) => suggestion.title;
 
 // Use your imagination to render suggestions.
-const renderSuggestion = (suggestion) => <div>{suggestion.name}</div>;
+const renderSuggestion = (suggestion) => {
+  const { title } = suggestion;
+  const artist = suggestion['artist-credit'];
+
+  return (
+    <div className="search-row">
+      <span id="title">{title}</span>{' '}
+      <span id="artist">{artist[0].name || artist[0].artist.name}</span>
+    </div>
+  );
+};
 
 export default function Search({ setAlbum }) {
   const [value, setValue] = useState('');
@@ -46,8 +46,13 @@ export default function Search({ setAlbum }) {
 
   // Autosuggest will call this function every time you need to update suggestions.
   // You already implemented this logic above, so just use it.
-  const onSuggestionsFetchRequested = ({ value }) => {
-    setSuggestions(getSuggestions(value));
+  const onSuggestionsFetchRequested = async ({ value }) => {
+    try {
+      const suggestions = await getSuggestions(value);
+      setSuggestions(suggestions);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   // Autosuggest will call this function every time you need to clear suggestions.
@@ -59,7 +64,6 @@ export default function Search({ setAlbum }) {
     event,
     { suggestion, suggestionValue, suggestionIndex, sectionIndex, method }
   ) => {
-    console.log('in onSuggestionSelected');
     setAlbum({ type: 'album', id: suggestion.id });
   };
 

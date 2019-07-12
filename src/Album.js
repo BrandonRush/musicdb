@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import useApi, { useEntity } from './hooks/useApi';
+
 import Helmet from 'react-helmet';
 import dayjs from 'dayjs';
 
@@ -40,8 +41,6 @@ export default function Album({ album }) {
     setEntity,
     setRelease
   ]);
-  console.log(release);
-  console.log('album', album);
 
   return (
     <>

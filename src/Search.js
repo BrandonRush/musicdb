@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Autosuggest from 'react-autosuggest';
+import { debounce } from 'lodash';
 
 // Teach Autosuggest how to calculate suggestions for any given input value.
 const getSuggestions = async (value) => {
